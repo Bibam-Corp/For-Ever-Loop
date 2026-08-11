@@ -1,0 +1,15 @@
+__pycache__
+.vscode
+python/cloudlink_vendor/
+*.bak
+.idea
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+*.pem
+*.zip
