@@ -1,0 +1,3 @@
+*.sb3 linguist-language=Scratch
+*.sprite3 linguist-language=ScratchSprite
+*.pmp linguist-language=PenguinMod
