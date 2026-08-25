@@ -1,0 +1,9 @@
+{
+    "date":15485.48,
+    "sender":"454758586-4758565",
+    "data":{
+        "characters":[{"id":"char1","cost":15}, {"id":"char2","cost":20}, {"id":"char3","cost":25}],
+        "pl_icons":[{"id":"icon1","cost":7}, {"id":"icon2","cost":10}, {"id":"icon3","cost":15}],
+        "rm_icons":[{"id":"icon1","cost":5}, {"id":"icon2","cost":8}, {"id":"icon3","cost":12}]
+    }
+}
