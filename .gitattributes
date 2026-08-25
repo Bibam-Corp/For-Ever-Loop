@@ -1,3 +1,8 @@
 *.sb3 linguist-language=Scratch
+*.sb3 linguist-detectable=true
+
 *.sprite3 linguist-language=ScratchSprite
+*.sprite3 linguist-detectable=true
+
 *.pmp linguist-language=PenguinMod
+*.pmp linguist-detectable=true
