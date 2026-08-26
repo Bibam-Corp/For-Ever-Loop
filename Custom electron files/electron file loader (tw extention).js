@@ -1,3 +1,127 @@
 //need to be load "unsandoxed" in turbowarp !
 
-(function (Scratch) { 'use strict'; if (!Scratch.extensions.unsandboxed) { throw new Error( 'Electron File Loader must run unsandboxed.' ); } class ElectronFileLoader { constructor() { this.currentFile = null; /* * Electron fournit ce bridge. * * Le bridge sera créé plus tard dans preload.js. */ if ( window.ElectronFileLoader && typeof window.ElectronFileLoader.onFileOpened === 'function' ) { window.ElectronFileLoader.onFileOpened((file) => { if (!file || typeof file !== 'object') { return; } this.currentFile = { name: String(file.name || ''), path: String(file.path || ''), size: Number(file.size || 0), data: String(file.data || ''), isText: Boolean(file.isText), mime: String( file.mime || 'application/octet-stream' ) }; /* * Déclenche le bloc : * * when a file is opened */ Scratch.vm.runtime.startHats( 'electronFileLoader_whenFileOpened' ); }); } else { console.warn( '[Electron File Loader] ' + 'Electron bridge not found. ' + 'Waiting for Electron.' ); } } getInfo() { return { id: 'electronFileLoader', name: 'Electron File Loader', color1: '#5865F2', color2: '#4752C4', color3: '#313A8C', blocks: [ { opcode: 'whenFileOpened', blockType: Scratch.BlockType.EVENT, text: 'when a file is opened', isEdgeActivated: false }, { opcode: 'openFile', blockType: Scratch.BlockType.BOOLEAN, text: 'open file ?' }, { opcode: 'fileName', blockType: Scratch.BlockType.REPORTER, text: 'file name' }, { opcode: 'filePath', blockType: Scratch.BlockType.REPORTER, text: 'file path' }, { opcode: 'fileSize', blockType: Scratch.BlockType.REPORTER, text: 'file size' }, { opcode: 'fileData', blockType: Scratch.BlockType.REPORTER, text: 'file data' }, { opcode: 'closeFile', blockType: Scratch.BlockType.COMMAND, text: 'close file' } ] }; } /* * <open file ?> */ openFile() { return this.currentFile !== null; } /* * (file name) */ fileName() { if (!this.currentFile) { return ''; } return this.currentFile.name; } /* * (file path) */ filePath() { if (!this.currentFile) { return ''; } return this.currentFile.path; } /* * (file size) */ fileSize() { if (!this.currentFile) { return 0; } return this.currentFile.size; } /* * (file data) */ fileData() { if (!this.currentFile) { return ''; } return this.currentFile.data; } /* * [close file] */ closeFile() { if ( window.ElectronFileLoader && typeof window.ElectronFileLoader.closeFile === 'function' ) { window.ElectronFileLoader.closeFile(); } this.currentFile = null; } /* * Event reporter. */ whenFileOpened() { return true; } } Scratch.extensions.register( new ElectronFileLoader() ); })(Scratch);
+(function (Scratch) {
+  "use strict";
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error("Electron File Loader must run unsandboxed.");
+  }
+  class ElectronFileLoader {
+    constructor() {
+      this.currentFile = null;
+      /* * Electron fournit ce bridge. * * Le bridge sera créé plus tard dans preload.js. */ if (
+        window.ElectronFileLoader &&
+        typeof window.ElectronFileLoader.onFileOpened === "function"
+      ) {
+        window.ElectronFileLoader.onFileOpened((file) => {
+          if (!file || typeof file !== "object") {
+            return;
+          }
+          this.currentFile = {
+            name: String(file.name || ""),
+            path: String(file.path || ""),
+            size: Number(file.size || 0),
+            data: String(file.data || ""),
+            isText: Boolean(file.isText),
+            mime: String(file.mime || "application/octet-stream"),
+          };
+          /* * Déclenche le bloc : * * when a file is opened */ Scratch.vm.runtime.startHats(
+            "electronFileLoader_whenFileOpened",
+          );
+        });
+      } else {
+        console.warn(
+          "[Electron File Loader] " +
+            "Electron bridge not found. " +
+            "Waiting for Electron.",
+        );
+      }
+    }
+    getInfo() {
+      return {
+        id: "electronFileLoader",
+        name: "Electron File Loader",
+        color1: "#5865F2",
+        color2: "#4752C4",
+        color3: "#313A8C",
+        blocks: [
+          {
+            opcode: "whenFileOpened",
+            blockType: Scratch.BlockType.EVENT,
+            text: "when a file is opened",
+            isEdgeActivated: false,
+          },
+          {
+            opcode: "openFile",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "open file ?",
+          },
+          {
+            opcode: "fileName",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "file name",
+          },
+          {
+            opcode: "filePath",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "file path",
+          },
+          {
+            opcode: "fileSize",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "file size",
+          },
+          {
+            opcode: "fileData",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "file data",
+          },
+          {
+            opcode: "closeFile",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "close file",
+          },
+        ],
+      };
+    }
+    /* * <open file ?> */ openFile() {
+      return this.currentFile !== null;
+    }
+    /* * (file name) */ fileName() {
+      if (!this.currentFile) {
+        return "";
+      }
+      return this.currentFile.name;
+    }
+    /* * (file path) */ filePath() {
+      if (!this.currentFile) {
+        return "";
+      }
+      return this.currentFile.path;
+    }
+    /* * (file size) */ fileSize() {
+      if (!this.currentFile) {
+        return 0;
+      }
+      return this.currentFile.size;
+    }
+    /* * (file data) */ fileData() {
+      if (!this.currentFile) {
+        return "";
+      }
+      return this.currentFile.data;
+    }
+    /* * [close file] */ closeFile() {
+      if (
+        window.ElectronFileLoader &&
+        typeof window.ElectronFileLoader.closeFile === "function"
+      ) {
+        window.ElectronFileLoader.closeFile();
+      }
+      this.currentFile = null;
+    }
+    /* * Event reporter. */ whenFileOpened() {
+      return true;
+    }
+  }
+  Scratch.extensions.register(new ElectronFileLoader());
+})(Scratch);
