@@ -2,13 +2,35 @@
     {
         "name": "LtgFool",
         "contributions": ["direct", "code", "artist", "music"],
-        "customdesc": "",
-        "social": "https://www.youtube.com/@StarfallMainDev"
+        "customdesc": "Project master and main developer/artist.",
+        "links": {
+            "youtube": "https://www.youtube.com/@StarfallMainDev",
+            "github": "https://github.com/Ltg-Fool"
+        }
     },
     {
         "name": "Saunter",
         "contributions": ["code", "artist", "music", "anim", "lore"],
         "customdesc": "also made THE OTHER character",
-        "social": "https://www.youtube.com/@saunter-music"
+        "links": {
+            "youtube": "https://www.youtube.com/@saunter-music"
+        }
+    },
+    {
+        "name": "Sound",
+        "contributions": ["code",  "music", "gameplay"],
+        "customdesc": "Made musics and stuff around game runtime.",
+        "links": {
+            "github": "https://github.com/table-coder"
+        }
+    },
+    {
+        "name": "Bibam.co",
+        "contributions": ["code", "UI designer"],
+        "customdesc": "Menu designer and systeme maker. FEL cloudlink fork Owner.",
+        "links": {
+            "instagram": "https://www.instagram.com/bibam_corp/",
+            "github": "https://github.com/Bibam-Corp"
+        }
     }
 ]
