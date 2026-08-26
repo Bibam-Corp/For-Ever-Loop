@@ -3,7 +3,7 @@
 
     let el;
     
-    vm.ap = vm.runtime.isPackaged ? "" : "http://localhost:8000/" // change if your local server is different
+    vm.ap = vm.runtime.isPackaged ? "" : "https://raw.githubusercontent.com/Bibam-Corp/For-Ever-Loop/refs/heads/main/Client%20Side/credits/" // change if your local server is different
 
     class flscrl {
         constructor(){
