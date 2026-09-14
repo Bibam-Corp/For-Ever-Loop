@@ -1,0 +1,8 @@
+regler la connection de fel
+essayer de patch le load de FEL (compilé)
+envoyer la vid de FEL en buggé
+regarder image trou noire rouge et tenter de faire une animation avec?
+faire le systeme d election dans fel
+faire le menu de waiting
+faire le systeme de chat / quick chat?
+ecrire le parametrage pour le compiler et l envoyer
