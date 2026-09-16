@@ -14,11 +14,26 @@ const {
 
 const fs = require('fs');
 const path = require('path');
+const { fileURLToPath } = require('url');
 
 const isMac = process.platform === 'darwin';
 
 let mainWindow = null;
 let pendingFiles = [];
+let missingResourceDialogOpen = false;
+let ignoreMissingResourceWarnings = false;
+const missingResources = new Set();
+let loadingWatchdog = null;
+
+const SLOW_LOADING_WARNING_MS = 8000;
+
+const TRANSPARENT_PNG =
+  'data:image/png;base64,' +
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL9xQAAAABJRU5ErkJggg==';
+
+const SILENT_WAV =
+  'data:audio/wav;base64,' +
+  'UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
 
 // ============================================================
 // SINGLE INSTANCE
@@ -590,14 +605,25 @@ function createProjectWindow(url) {
     window;
 
 
+  // Show the window immediately. Waiting for the first paint can leave the
+  // user looking at nothing while the renderer is retrying a missing asset.
+  window.show();
   window.loadURL(url);
 
 
-  window.once(
-    'ready-to-show',
-    () => {
+  if (SLOW_LOADING_WARNING_MS > 0) {
 
-      window.show();
+    loadingWatchdog = setTimeout(
+      () => showSlowLoadingDialog(window),
+      SLOW_LOADING_WARNING_MS
+    );
+
+  }
+
+
+  window.webContents.once(
+    'did-finish-load',
+    () => {
 
       flushPendingFiles();
 
@@ -608,6 +634,13 @@ function createProjectWindow(url) {
   window.on(
     'closed',
     () => {
+
+      if (loadingWatchdog) {
+
+        clearTimeout(loadingWatchdog);
+        loadingWatchdog = null;
+
+      }
 
       if (
         mainWindow === window
@@ -657,6 +690,177 @@ function openLink(url) {
 
   }
 
+}
+
+
+// ============================================================
+// MISSING LOCAL RESOURCES
+// ============================================================
+
+function fallbackURLForResource(url) {
+
+  const extension =
+    path.extname(new URL(url).pathname).toLowerCase();
+
+
+  if ([
+    '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.ico', '.svg'
+  ].includes(extension)) {
+
+    return TRANSPARENT_PNG;
+
+  }
+
+
+  if (['.mp3', '.wav', '.ogg'].includes(extension)) {
+
+    return SILENT_WAV;
+
+  }
+
+
+  if (extension === '.json') {
+
+    return 'data:application/json,%7B%7D';
+
+  }
+
+
+  if (extension === '.css') {
+
+    return 'data:text/css,';
+
+  }
+
+
+  if (extension === '.js') {
+
+    return 'data:application/javascript,';
+
+  }
+
+
+  return 'data:application/octet-stream;base64,';
+}
+
+
+function showMissingResourceDialog() {
+
+  if (
+    missingResourceDialogOpen ||
+    ignoreMissingResourceWarnings ||
+    !mainWindow ||
+    mainWindow.isDestroyed()
+  ) {
+
+    return;
+
+  }
+
+
+  missingResourceDialogOpen = true;
+
+
+  const files = [...missingResources]
+    .slice(0, 8)
+    .map(file => `• ${file}`)
+    .join('\n');
+
+
+  const extraCount = missingResources.size - 8;
+
+
+  dialog.showMessageBox(mainWindow, {
+
+    type: 'warning',
+
+    title: 'Fichiers manquants',
+
+    message: 'Des ressources absentes ont été remplacées pour éviter le blocage.',
+
+    detail:
+      'Le jeu devrait continuer sans attendre, mais certains éléments peuvent manquer.\n\n' +
+      files +
+      (extraCount > 0 ? `\n• … et ${extraCount} autre(s) fichier(s)` : ''),
+
+    buttons: ['Fermer le jeu', 'Continuer quand même'],
+
+    defaultId: 0,
+
+    cancelId: 0,
+
+    noLink: true
+
+  }).then(result => {
+
+    missingResourceDialogOpen = false;
+
+
+    if (result.response === 0) {
+
+      app.quit();
+
+    } else {
+
+      ignoreMissingResourceWarnings = true;
+
+    }
+
+  });
+}
+
+
+function showSlowLoadingDialog(window) {
+
+  if (
+    missingResourceDialogOpen ||
+    ignoreMissingResourceWarnings ||
+    !window ||
+    window.isDestroyed()
+  ) {
+
+    return;
+
+  }
+
+
+  missingResourceDialogOpen = true;
+
+
+  dialog.showMessageBox(window, {
+
+    type: 'warning',
+
+    title: 'Chargement anormalement long',
+
+    message: 'Le jeu ne termine pas son chargement.',
+
+    detail: 'Un fichier peut manquer ou le jeu peut attendre une ressource.',
+
+    buttons: ['Fermer le jeu', 'Continuer quand même'],
+
+    defaultId: 0,
+
+    cancelId: 0,
+
+    noLink: true
+
+  }).then(result => {
+
+    missingResourceDialogOpen = false;
+
+
+    if (result.response === 0) {
+
+      app.quit();
+
+    } else {
+
+      ignoreMissingResourceWarnings = true;
+
+    }
+
+  });
 }
 
 
@@ -910,14 +1114,49 @@ app.on(
 
       (details, callback) => {
 
-        callback({
+        if (!details.url.startsWith(resourcesURL)) {
 
-          cancel:
-            !details.url.startsWith(
-              resourcesURL
-            )
+          callback({ cancel: true });
 
-        });
+          return;
+
+        }
+
+
+        try {
+
+          const requestedPath = fileURLToPath(details.url);
+
+
+          if (fs.existsSync(requestedPath)) {
+
+            callback({ cancel: false });
+
+            return;
+
+          }
+
+
+          // Return an immediate, harmless response rather than letting the
+          // TurboWarp loader wait/retry a nonexistent local resource.
+          missingResources.add(
+            path.relative(__dirname, requestedPath)
+          );
+
+
+          setImmediate(showMissingResourceDialog);
+
+
+          callback({
+            redirectURL: fallbackURLForResource(details.url)
+          });
+
+
+        } catch {
+
+          callback({ cancel: true });
+
+        }
 
       }
 
