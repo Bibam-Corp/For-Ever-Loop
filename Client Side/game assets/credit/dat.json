@@ -1,0 +1,27 @@
+{
+    "LTG":{
+        "desc":"The main coder and original coder of the game. He does a lot of diferent stuff across the game...",
+        "useto":["Coder","Artist","Musician","Manager","Lore Writer"],
+        "from":"USA"
+    },
+    "BC":{
+        "desc":"Seconde coder, He remade the entire UI and make the game fell smoother... He also put to work the entire cloud systeme and fix other game issues...",
+        "useto":["Coder","Cloud Maker","UI Maker","Manager"],
+        "from":"France"
+    },
+    "Bob":{
+        "desc":"Dont know who is this bro but he work on the game...",
+        "useto":[""],
+        "from":"???"
+    },
+    "Saunter":{
+        "desc":"Code various things around the game and create stuff like customs extentions...",
+        "useto":["Coder","UI Maker","Extention Maker","Musician"],
+        "from":"???"
+    },
+    "Zippie":{
+        "desc":"An radom guy who help writing the lore.",
+        "useto":["Lore Writer"],
+        "from":"???"
+    }
+}
