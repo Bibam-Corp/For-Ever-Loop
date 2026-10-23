@@ -1,0 +1,46 @@
+{
+    "settings":{
+        "quick":{
+
+        },
+        "video":{
+            "#Fullscreen":"False",
+            "#Canvas effects":"True",
+            "#Reduce effect":"False",
+            "#Reduce particules":"False"
+        },
+        "key":{
+            "$forward":"z",
+            "$backward":"s",
+            "$left":"q",
+            "$back":"d",
+            "$sprint":"shift",
+            "$interact":"f",
+            "$ability1":"e",
+            "$ability2":"r",
+            "$ability3":"t"
+        },
+        "audio":{
+            "-Music Volume":100,
+            "-UI Volume":100,
+            "-Effect volume":100,
+            "#Reduce effects":"False",
+            "-Voice Volumes":100
+        },
+        "experience":{
+            "#Chat":"True",
+            "#Reduce animations":"False",
+            "#screen shake":"True",
+            "#Play intro":"True"
+        }
+    },
+    "user":{
+
+    },
+    "gamesetup":{
+        "playerpergames":5,
+        "expirationdelay":15,
+        "killerpergames":2,
+        "roundcount":3
+    }
+}
