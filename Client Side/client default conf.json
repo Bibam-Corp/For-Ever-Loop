@@ -42,13 +42,13 @@
         "expirationdelay":15,
         "killerpergames":1,
         "roundcount":3,
-        "gameduration":150
+        "gameduration":35
     },
     "character":{
         "grail":{
             "speed":2,
             "health":250,
-            "defaultdamage":15,
+            "defaultdamage":75,
             "passiveregenaration":"False",
             "role":"killer",
             "desciption":""
