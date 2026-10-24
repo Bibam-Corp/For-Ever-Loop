@@ -42,5 +42,15 @@
         "expirationdelay":15,
         "killerpergames":2,
         "roundcount":3
+    },
+    "character":{
+        "grail":{
+            "speed":2,
+            "health":250,
+            "defaultdamage":15,
+            "passiveregenaration":"False",
+            "role":"killer",
+            "desciption":"The Grail is a character that has a good speed and health, but has a low damage. It has a passive regeneration that allows it to recover health over time."
+        }
     }
 }
