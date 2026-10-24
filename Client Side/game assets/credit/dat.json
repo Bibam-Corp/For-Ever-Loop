@@ -10,9 +10,9 @@
         "from":"France"
     },
     "Bob":{
-        "desc":"Dont know who is this bro but he work on the game...",
-        "useto":[""],
-        "from":"???"
+        "desc":"hello i'm bob, i made some music for the game. that's really it",
+        "useto":["Musician"],
+        "from":"USA"
     },
     "Saunter":{
         "desc":"Code various things around the game and create stuff like customs extentions...",
